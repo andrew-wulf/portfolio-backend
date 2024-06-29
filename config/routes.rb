@@ -12,10 +12,13 @@ Rails.application.routes.draw do
   get "/login" => "sessions#login"
 
   get "/user" => "users#current_user_info"
+  get "users/exists" => "users#exists"
+  get "/users/:username" => "users#show"
+
   post "/users" => "users#create"
 
   get "/tweets/timeline" => "tweets#timeline"
-  get "/tweets/users/:id" => "tweets#user_tweets"
+  get "/tweets/users/:username" => "tweets#user_tweets"
   get "/tweets/:id" => "tweets#show"
 
 end

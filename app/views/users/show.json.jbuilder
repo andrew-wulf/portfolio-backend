@@ -11,3 +11,9 @@ json.banner @user.banner
 
 json.verified @user.verified
 json.admin @user.admin
+
+
+json.followers @user.followers
+json.following @user.following
+
+json.likes @user.likes.count

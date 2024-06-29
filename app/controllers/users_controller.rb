@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   def create
     user = User.new(
-      name: params[:name],
+      username: params[:username],
       email: params[:email],
       password: params[:password],
       password_confirmation: params[:password_confirmation],
@@ -24,4 +24,30 @@ class UsersController < ApplicationController
     render :show
   end
 
+
+  def show
+    @user = User.find_by(username: params[:username])
+    render :show
+  end
+
+  def exists
+    exists = false
+    username, email = params[:username] || "", params[:email] || ""
+
+    if username
+      if email
+        @user = User.where("LOWER( email ) = ?", email.downcase).or(User.where("LOWER( username ) = ?", username.downcase)).first
+      else
+        @user = User.where("LOWER( username ) = ?", username.downcase).first
+      end
+    else
+      @user = User.where("LOWER( email ) = ?", email.downcase).first
+    end
+    if @user
+      exists = true
+    end
+
+    render json: {user_exists: exists}
+  end
+  
 end

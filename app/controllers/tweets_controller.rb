@@ -7,7 +7,7 @@ class TweetsController < ApplicationController
   end
 
   def user_tweets
-    user = User.find_by(id: params[:id])
+    user = User.find_by(username: params[:username])
 
     offset, limit = params[:offset] || 0, params[:limit] || 50
 
