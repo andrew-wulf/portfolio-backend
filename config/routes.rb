@@ -21,4 +21,8 @@ Rails.application.routes.draw do
   get "/tweets/users/:username" => "tweets#user_tweets"
   get "/tweets/:id" => "tweets#show"
 
+
+  post "/movies/search" => "movie_battle#search"
+  post "/movies/data/:id" => "movie_battle#movie_data"
+
 end

@@ -1,0 +1,2 @@
+module MovieBattleHelper
+end

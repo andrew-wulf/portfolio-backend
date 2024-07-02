@@ -72,3 +72,6 @@ gem "faker"
 gem 'rack-cors'
 gem 'bcrypt', '~> 3.1.7'
 gem 'jwt'
+gem 'uri'
+gem 'net-http'
+gem 'titlecase'
