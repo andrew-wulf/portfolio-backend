@@ -8,6 +8,16 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+require "./db/fake_tweets"
+
+
+def rand_range(num)
+
+  list = *0..num
+  return list.shuffle
+
+end
+
 
 # generate fake content here -----
 
@@ -16,154 +26,180 @@ images = ["https://img.freepik.com/free-photo/abstract-nature-painted-with-water
 banner = "https://images.unsplash.com/photo-1506765515384-028b60a970df?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
 
+
 # ---------- make admin account & a tweet
 admin = User.new(username: 'andrew_wulf', email: 'awulf@gmail.com', password: 'password', password_confirmation: 'password', display_name: 'The Architect', avi: images[rand(0...images.length)], 
-banner: banner, bio: "Literally God", verified: true, admin: true)
+banner: banner, bio: "I made all of this!", verified: true, admin: true)
 admin.save
 
 tweet = Tweet.new(user_id: 1, text: "Bringing twitter back.")
 tweet.save
 
-tweet = Tweet.new(user_id: 1, image: "https://hips.hearstapps.com/hmg-prod/images/2s9cjb-1548710537.jpg?crop=1xw:0.9523809523809523xh;center,top&resize=1200:*")
+tweet = Tweet.new(user_id: 1, text: "Memes are supported on this platform! Observe:", image: "https://hips.hearstapps.com/hmg-prod/images/2s9cjb-1548710537.jpg?crop=1xw:0.9523809523809523xh;center,top&resize=1200:*")
 tweet.save
 
-tweet = Tweet.new(user_id: 1, text: "Check this out!", video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+tweet = Tweet.new(user_id: 1, text: "Introducing: Embedded videos!", video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 tweet.save
 
 # ----------- make fake users
-user = User.create(username: 'luke_skywalker',
-display_name: 'The Chosen One', 
-email: "luke@gmail.com", 
-password: "password",
-password_confirmation: "password",
-avi: "https://images.gr-assets.com/characters/1264613782p8/1783.jpg",
-admin: false, banner: banner, bio: "test bio")
-user.save
 
-t = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-t.save
-subtweet = Subtweet.new(tweet_id: 1, sub_id: t.id)
-subtweet.save
-
-user = User.create(username: 'john_wick',
-display_name: 'John',
-email: "john@gmail.com", 
-password: "password",
-password_confirmation: "password",
-avi: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d0/John_Wick_-_Chapter_4_promotional_poster.jpg/220px-John_Wick_-_Chapter_4_promotional_poster.jpg",
-admin: false, banner: banner, bio: "test bio")
-user.save
-
-t2 = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-t2.save
-subtweet = Subtweet.new(tweet_id: 1, sub_id: t2.id)
-subtweet.save
-
-user = User.create(username: 'harley_quinn',
-display_name: 'Harlene Quinzel, MD.',
-email: "harley@gmail.com", 
-password: "password",
-password_confirmation: "password",
-avi: "https://i.guim.co.uk/img/media/70336afc112f7ec7d2e7fb67273f5bfb02791235/0_209_1202_721/master/1202.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=c7aac128b81f030d470b6118a57ea68e",
-admin: false, banner: banner, bio: "test bio")
-user.save
-
-t3 = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-t3.save
-subtweet = Subtweet.new(tweet_id: t2.id, sub_id: t3.id)
-subtweet.save
-
-user = User.create(username: 'james_kirk',
-display_name: 'Admiral James T. Kirk',
-email: "jim@gmail.com", 
-password: "password",
-password_confirmation: "password",
-avi: "https://imageio.forbes.com/blogs-images/alexknapp/files/2012/11/JamesTKirk.jpg?height=380&width=300&fit=bounds",
-admin: false, banner: banner, bio: "test bio")
-user.save
-
-t4 = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-t4.save
-subtweet = Subtweet.new(tweet_id: t3.id, sub_id: t4.id)
-subtweet.save
-
-user = User.create(username: 'bruce_wayne',
-display_name: 'Big Daddy Bruce',
-email: "bruce@gmail.com", 
-password: "password",
-password_confirmation: "password",
-avi: "https://upload.wikimedia.org/wikipedia/en/1/19/Bruce_Wayne_%28The_Dark_Knight_Trilogy%29.jpg",
-admin: false, banner: banner, bio: "test bio")
-user.save
-
-t5 = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-t5.save
-subtweet = Subtweet.new(tweet_id: t3.id, sub_id: t5.id)
-subtweet.save
 
 
 # ------------ make user accounts and some tweets for each
-30.times do
+primary_users = []
+
+20.times do
   first, last = Faker::Name.first_name, Faker::Name.last_name
   username = "#{first}#{last}"
   email = "#{first}#{last}@gmail.com"
   password = "password"
   display_name = "#{first} #{last}"
-  bio = "Fire tweets only. \nvenmo @#{first}.#{last}\nkik @#{first}.#{last}"
+  bio = "placeholder bio"
 
   user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: images[rand(0...images.length)], banner: banner, bio: bio)
   
   if user.save
-    3.times do
-      tweet = Tweet.new(user_id: user.id, text: "example tweet")
-      tweet.save
-    end
-    tweet = Tweet.new(user_id: user.id, image: "https://hips.hearstapps.com/hmg-prod/images/2s9cjb-1548710537.jpg?crop=1xw:0.9523809523809523xh;center,top&resize=1200:*")
-    tweet.save
-
-    tweet = Tweet.new(user_id: user.id, text: "Check this out!", video: 'https://youtube.com/embed/dQw4w9WgXcQ?autoplay=0')
-    tweet.save
+    primary_users.push(user)
   else
     pp user.errors
   end
 
 end
 
-count = Tweet.all.length
-user_count = User.all.length
+# Make sure admin is following some of the primary users
+(primary_users.length / 4).to_i.times do
+  user = primary_users[rand(0...primary_users.length)]
+  follow = Follow.new(follower_id: 1, followed_id: user.id)
+  follow.save
+  
+end
+
+
+
+
+
+180.times do
+  first, last = Faker::Name.first_name, Faker::Name.last_name
+  username = "#{first}#{last}"
+  email = "#{first}#{last}@gmail.com"
+  password = "password"
+  display_name = "#{first} #{last}"
+  bio = "placeholder bio"
+
+  user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: images[rand(0...images.length)], banner: banner, bio: bio)
+  
+  if user.save === false
+    pp user.errors
+  end
+end
+
+
+
 # ------------- each user gives likes, retweets, and follows
+
+
+
+# Generate followers
 
 User.all.each do |user|
 
-  15.times do
-    tweet = Tweet.find_by(id: (rand(1...count)))
-    if tweet.user_id != user.id
-      like = Like.new(tweet_id: tweet.id, user_id: user.id)
-      like.save
-
-      t = Tweet.new(user_id: user.id, text: 'This is a subtweet!', is_subtweet: true)
-      t.save
-      subtweet = Subtweet.new(tweet_id: tweet.id, sub_id: t.id)
-      subtweet.save
-
-      t2 = Tweet.new(user_id: user.id, text: 'This tweet is crazy lmaoo', is_quote: true)
-      t2.save
-      quote = Quote.new(tweet_id: t2.id, quoted_id: tweet.id)
-      quote.save
-    end
+  rand(10..30).times do
+    follow = Follow.new(follower_id: user.id, followed_id: (rand(1...User.all.length)))
+    follow.save
   end
+  # Everyone follows admin
+  follow = Follow.new(follower_id: user.id, followed_id: 1)
+  follow.save
+end
 
-  5.times do
-    tweet = Tweet.find_by(id: (rand(1...count)))
+
+# Generate a bunch of random tweets with responses. Random users tweet them out, interspersed with randomly placed quote tweets and retweets (which are guaranteed to be a smaller percentage of content).
+
+# When a tweet is made, random followers of the user will tweet the subtweets in a random order.
+
+
+rand_tweets = tweet_generator()
+rand_tweet_ids = rand_range(rand_tweets.length)
+
+rt_count = (rand_tweets.length / 4).to_i
+quote_count = (rand_tweets.length / 15).to_i
+
+rt_count.times do
+  rand_tweets.push('rt')
+end
+
+quote_count.times do
+  rand_tweets.push('quote')
+end
+
+rand_tweets = rand_tweets.shuffle
+
+i = 0
+
+while i < rand_tweets.length
+  curr = rand_tweets[i]
+
+  user = primary_users[rand(0...primary_users.length)]
+
+  if curr == 'rt'
+    tweet = Tweet.find_by(id: (rand(1...Tweet.all.length)))
     if tweet.user_id != user.id
       rt = Retweet.new(tweet_id: tweet.id, user_id: user.id)
       rt.save
     end
+
+  elsif curr == 'quote'
+    tweet = Tweet.find_by(id: (rand(1...Tweet.all.length)))
+
+    if tweet.user_id != user.id
+      t = Tweet.new(user_id: user.id, text: 'This really made me think!', is_quote: true)
+      t.save
+      q = Quote.new(tweet_id: t.id, quoted_id: tweet.id)
+      q.save
+    end
+
+  else
+    tweet = Tweet.new(user_id: user.id, text: curr[0], is_subtweet: false)
+    tweet.save
+    
+    followers = user.followers
+
+    subtweets = curr[1...curr.length].shuffle
+
+    subtweets.each do |st|
+
+      follower = followers[rand(0...followers.length)]
+
+      t = Tweet.new(user_id: follower.id, text: st, is_subtweet: true)
+      if t.save == false
+        pp t.errors
+      end
+
+      subtweet = Subtweet.new(tweet_id: tweet.id, sub_id: t.id)
+      if subtweet.save == false
+        pp subtweet.errors
+      end
+
+    end
+
   end
 
-  10.times do
-    follow = Follow.new(follower_id: user.id, followed_id: (rand(1...user_count)))
-    follow.save
+  i +=1
+
+end
+
+
+
+# After everything else is done, everyone likes a ton of random tweets.
+
+User.all.each do |user|
+
+  50.times do
+    tweet = Tweet.find_by(id: (rand(1...Tweet.all.length)))
+    if tweet.user_id != user.id
+      like = Like.new(tweet_id: tweet.id, user_id: user.id)
+      like.save
+    end
   end
 end
 

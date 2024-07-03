@@ -16,11 +16,11 @@ class User < ApplicationRecord
 
 
   def followers
-    return self.following_users.map {|f| f.follower}
+    return self.follower_users.map {|f| f.follower}
   end
 
   def following
-    return self.follower_users.map {|f| f.following}
+    return self.following_users.map {|f| f.following}
   end
 
 
