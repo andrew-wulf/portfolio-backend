@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "/login" => "sessions#login"
 
   get "/user" => "users#current_user_info"
+
   get "users/exists" => "users#exists"
   get "/users/:username" => "users#show"
 
@@ -20,7 +21,9 @@ Rails.application.routes.draw do
   get "/tweets/timeline" => "tweets#timeline"
   get "/tweets/users/:username" => "tweets#user_tweets"
   get "/tweets/:id" => "tweets#show"
-
+  post "/tweets/:id/like" => "tweets#like_toggle"
+  post "/tweets/new" => "tweets#create"
+  post "/tweets/subtweet" => "tweets#subtweet"
 
   post "/movies/search" => "movie_battle#search"
   post "/movies/data/:id" => "movie_battle#movie_data"

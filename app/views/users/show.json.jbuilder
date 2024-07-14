@@ -16,4 +16,6 @@ json.admin @user.admin
 json.followers @user.followers
 json.following @user.following
 
-json.likes @user.likes.count
+likes = @user.likes
+json.likes likes.count
+json.liked_ids likes.map {|like| like.tweet_id}

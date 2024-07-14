@@ -39,4 +39,8 @@ json.array! @tweets do |tweet|
       json.avi qt.user.avi
     end
   end
+
+  if @current_user
+    json.liked_by_user tweet.liked_by_user(@current_user)
+  end
 end

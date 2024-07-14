@@ -14,7 +14,6 @@ class Tweet < ApplicationRecord
   def has_content
     if self.text == nil && self.image == nil && self.video == nil
       errors.add(:base, "Tweet must contain content.")
-      pp first_entry
     end
   end
 
@@ -63,5 +62,28 @@ class Tweet < ApplicationRecord
       end
     end
     return output
+  end
+
+  
+  def liked_by_user(user)
+    id = user.id
+    likes = Like.where(tweet_id: self.id).order(user_id: 'asc').map {|like| like.user_id}
+    
+
+    low, high = 0, likes.length - 1
+    
+    while low <= high
+      mid = low + ((high - low) / 2) 
+
+      if likes[mid] == id
+        return true
+      
+      elsif likes[mid] < id
+        low = mid + 1
+      else
+        high = mid - 1
+      end
+    end
+    return false
   end
 end

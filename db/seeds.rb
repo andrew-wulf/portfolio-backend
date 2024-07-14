@@ -45,7 +45,7 @@ tweet.save
 
 
 
-# ------------ make user accounts and some tweets for each
+# ------------ make user accounts
 primary_users = []
 
 20.times do
@@ -93,9 +93,6 @@ end
   end
 end
 
-
-
-# ------------- each user gives likes, retweets, and follows
 
 
 

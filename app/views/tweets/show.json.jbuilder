@@ -87,3 +87,7 @@ if @tweet.is_subtweet
   end
 end
 
+if @current_user
+  json.liked_by_user @tweet.liked_by_user(@current_user)
+end
+
