@@ -20,8 +20,11 @@ Rails.application.routes.draw do
 
   get "/tweets/timeline" => "tweets#timeline"
   get "/tweets/users/:username" => "tweets#user_tweets"
+
   get "/tweets/:id" => "tweets#show"
   post "/tweets/:id/like" => "tweets#like_toggle"
+  post "/tweets/:id/retweet" => "tweets#retweet_toggle"
+
   post "/tweets/new" => "tweets#create"
   post "/tweets/subtweet" => "tweets#subtweet"
 

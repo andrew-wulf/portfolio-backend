@@ -9,6 +9,8 @@
 #   end
 
 require "./db/fake_tweets"
+require "./db/avatars"
+require "./db/banners"
 
 
 def rand_range(num)
@@ -23,22 +25,29 @@ end
 
 images = ["https://img.freepik.com/free-photo/abstract-nature-painted-with-watercolor-autumn-leaves-backdrop-generated-by-ai_188544-9806.jpg", "https://www.epidemicsound.com/blog/content/images/size/w2000/2023/05/what-is-royalty-free-music-header.webp", "https://www.poynter.org/wp-content/uploads/2019/02/2.Journalism-Fundamentals-June-2022.png", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT0XanS-zY2amtRDJ3gPw5jo2KbRhCVAh8xQ&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz09fAl5_eoIvPeL-TMX_UoUgkx9pJaqD0VA&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsLiY8nDX3q-95uvIK_QoD1ve0KO9OxHbEiA&s", "https://jetpackcomics.com/wp-content/uploads/2018/10/stacks-of-comic-books.png", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX4VNKCg0WkEnPaG3PzaNPgYhhl03XaqJeww&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAxrpbb-pzxj3EcG4e6_YgojhBohwf8imqew&s", "https://images.unsplash.com/photo-1582845512747-e42001c95638?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]
 
-banner = "https://images.unsplash.com/photo-1506765515384-028b60a970df?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+banners = banners()
+avatars = avatars()
 
+banner_index = 0
+avatar_index = 0
 
 
 # ---------- make admin account & a tweet
-admin = User.new(username: 'andrew_wulf', email: 'awulf@gmail.com', password: 'password', password_confirmation: 'password', display_name: 'The Architect', avi: images[rand(0...images.length)], 
-banner: banner, bio: "I made all of this!", verified: true, admin: true)
+
+banner = 'https://images.unsplash.com/photo-1516331138075-f3adc1e149cd?q=80&w=2108&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+avi = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX4VNKCg0WkEnPaG3PzaNPgYhhl03XaqJeww&s"
+
+admin = User.new(username: 'andrew_wulf', email: 'awulf@gmail.com', password: 'password', password_confirmation: 'password', display_name: 'The Architect', avi: avi, 
+banner: banner, bio: "I made all of this!", verified: true, admin: true,)
 admin.save
 
-tweet = Tweet.new(user_id: 1, text: "Bringing twitter back.")
+tweet = Tweet.new(user_id: 1, text: "Bringing twitter back.", views: 1500000, timestamp: Faker::Date.between(from: '2024-04-01', to: '2024-04-01'))
 tweet.save
 
-tweet = Tweet.new(user_id: 1, text: "Memes are supported on this platform! Observe:", image: "https://hips.hearstapps.com/hmg-prod/images/2s9cjb-1548710537.jpg?crop=1xw:0.9523809523809523xh;center,top&resize=1200:*")
+tweet = Tweet.new(user_id: 1, text: "Memes are supported on this platform! Observe:", image: "https://hips.hearstapps.com/hmg-prod/images/2s9cjb-1548710537.jpg?crop=1xw:0.9523809523809523xh;center,top&resize=1200:*", views: 310000, timestamp: Faker::Date.between(from: '2024-04-01', to: '2024-04-01'))
 tweet.save
 
-tweet = Tweet.new(user_id: 1, text: "Introducing: Embedded videos!", video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+tweet = Tweet.new(user_id: 1, text: "Introducing: Embedded videos!", video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', views: 24500, timestamp: Faker::Date.between(from: '2024-04-01', to: '2024-04-01'))
 tweet.save
 
 # ----------- make fake users
@@ -56,7 +65,10 @@ primary_users = []
   display_name = "#{first} #{last}"
   bio = "placeholder bio"
 
-  user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: images[rand(0...images.length)], banner: banner, bio: bio)
+  avi = avatars[avatar_index]
+  banner = banners[banner_index]
+
+  user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: avi, banner: banner, bio: bio)
   
   if user.save
     primary_users.push(user)
@@ -64,6 +76,14 @@ primary_users = []
     pp user.errors
   end
 
+  avatar_index +=1
+  banner_index +=1
+  if avatar_index >= avatars.length
+    avatar_index = 0
+  end
+  if banner_index >= banners.length
+    banner_index = 0
+  end
 end
 
 # Make sure admin is following some of the primary users
@@ -86,10 +106,22 @@ end
   display_name = "#{first} #{last}"
   bio = "placeholder bio"
 
-  user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: images[rand(0...images.length)], banner: banner, bio: bio)
+  avi = avatars[avatar_index]
+  banner = banners[banner_index]
+
+  user = User.new(username: username, email: email, password: password, password_confirmation: password, display_name: display_name, avi: avi, banner: banner, bio: bio)
   
   if user.save === false
     pp user.errors
+  end
+
+  avatar_index +=1
+  banner_index +=1
+  if avatar_index >= avatars.length
+    avatar_index = 0
+  end
+  if banner_index >= banners.length
+    banner_index = 0
   end
 end
 
@@ -118,7 +150,7 @@ end
 rand_tweets = tweet_generator()
 rand_tweet_ids = rand_range(rand_tweets.length)
 
-rt_count = (rand_tweets.length / 4).to_i
+rt_count = (rand_tweets.length / 3).to_i
 quote_count = (rand_tweets.length / 15).to_i
 
 rt_count.times do
@@ -131,6 +163,14 @@ end
 
 rand_tweets = rand_tweets.shuffle
 
+time = DateTime.now.advance(days: -1)
+timestamps = []
+n = rand_tweets.length + rt_count
+n.times do
+  timestamps.push(Faker::Date.between(from: '2024-04-02', to: "#{time.year}-#{time.month}-#{time.day}"))
+end
+timestamps.sort
+
 i = 0
 
 while i < rand_tweets.length
@@ -138,10 +178,12 @@ while i < rand_tweets.length
 
   user = primary_users[rand(0...primary_users.length)]
 
+  view_count = rand(900)
+
   if curr == 'rt'
     tweet = Tweet.find_by(id: (rand(1...Tweet.all.length)))
     if tweet.user_id != user.id
-      rt = Retweet.new(tweet_id: tweet.id, user_id: user.id)
+      rt = Retweet.new(tweet_id: tweet.id, user_id: user.id, timestamp: timestamps[i])
       rt.save
     end
 
@@ -149,14 +191,14 @@ while i < rand_tweets.length
     tweet = Tweet.find_by(id: (rand(1...Tweet.all.length)))
 
     if tweet.user_id != user.id
-      t = Tweet.new(user_id: user.id, text: 'This really made me think!', is_quote: true)
+      t = Tweet.new(user_id: user.id, text: 'This really made me think!', is_quote: true, views: view_count, timestamp: timestamps[i])
       t.save
       q = Quote.new(tweet_id: t.id, quoted_id: tweet.id)
       q.save
     end
 
   else
-    tweet = Tweet.new(user_id: user.id, text: curr[0], is_subtweet: false)
+    tweet = Tweet.new(user_id: user.id, text: curr[0], is_subtweet: false, views: view_count, timestamp: timestamps[i])
     tweet.save
     
     followers = user.followers
@@ -167,7 +209,7 @@ while i < rand_tweets.length
 
       follower = followers[rand(0...followers.length)]
 
-      t = Tweet.new(user_id: follower.id, text: st, is_subtweet: true)
+      t = Tweet.new(user_id: follower.id, text: st, is_subtweet: true, views: rand((view_count / 2).to_i), timestamp: timestamps[i])
       if t.save == false
         pp t.errors
       end

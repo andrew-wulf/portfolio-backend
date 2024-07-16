@@ -44,24 +44,52 @@ class User < ApplicationRecord
 
   def content(offset=0, limit=50)
 
-    retweets = Retweet.where(user_id: self.id).offset(offset).limit(limit).map {|rt| rt.tweet}
-    tweets = Tweet.where(user_id: self.id).where(is_subtweet: false).offset(offset).limit(limit)
+    retweets = Retweet.where(user_id: self.id).offset(offset).limit(limit).map {|rt| [rt.created_at, rt]}
+    tweets = Tweet.where(user_id: self.id).where(is_subtweet: false).offset(offset).limit(limit).map {|tweet| [tweet.created_at, tweet]}
 
-    output = tweets + retweets
-
-    return output.sort.reverse
+    mixed_arr = tweets + retweets
+    output= self.sort_mixed_output(mixed_arr)
+    return output
   end
 
   def timeline(offset=0, limit=50)
     
     ids = self.following.map {|user| user.id}
 
-    retweets = Retweet.where(user_id: ids).offset(offset).limit(limit).map {|rt| rt.tweet}
-    tweets = Tweet.where(user_id: ids).where(is_subtweet: false).offset(offset).limit(limit)
+    retweets = Retweet.where(user_id: ids).offset(offset).limit(limit).map {|rt| [rt.timestamp, rt]}
+    tweets = Tweet.where(user_id: ids).where(is_subtweet: false).offset(offset).limit(limit).map {|tweet| [tweet.timestamp, tweet]}
 
-    output = tweets + retweets
+    mixed_arr = tweets + retweets
+    output= self.sort_mixed_output(mixed_arr)
 
-    return output.sort.reverse
+    return output
   end
+
+
+
+  def sort_mixed_output(arr)
+
+    i = 0
+
+    while i < arr.length - 1
+    
+      j = arr.length - 1
+
+      while j > i
+        #compare timestamps for sorting. Sort highest to lowest
+
+        if arr[j][0] > arr[j - 1][0]
+          arr[j], arr[j - 1] = arr[j - 1], arr[j]
+        end
+        
+        j -=1
+      end
+
+      i+=1
+    end
+
+    return arr.map {|arr| arr[1]}
+  end
+
 
 end

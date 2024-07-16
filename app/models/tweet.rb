@@ -11,12 +11,16 @@ class Tweet < ApplicationRecord
   validate :has_content
 
 
+  def view
+    self.views +=1
+    self.save
+  end
+
   def has_content
     if self.text == nil && self.image == nil && self.video == nil
       errors.add(:base, "Tweet must contain content.")
     end
   end
-
 
   def like_count
     return self.likes.length
@@ -69,16 +73,27 @@ class Tweet < ApplicationRecord
     id = user.id
     likes = Like.where(tweet_id: self.id).order(user_id: 'asc').map {|like| like.user_id}
     
+    return self.binary_search(likes, id)
+  end
 
-    low, high = 0, likes.length - 1
+  def retweeted_by_user(user)
+    id = user.id
+    retweets = Retweet.where(tweet_id: self.id).order(user_id: 'asc').map {|rt| rt.user_id}
+
+    return self.binary_search(retweets, id)
+  end
+
+
+  def binary_search(arr, val)
+    low, high = 0, arr.length - 1
     
     while low <= high
       mid = low + ((high - low) / 2) 
 
-      if likes[mid] == id
+      if arr[mid] == val
         return true
       
-      elsif likes[mid] < id
+      elsif arr[mid] < val
         low = mid + 1
       else
         high = mid - 1
@@ -86,4 +101,5 @@ class Tweet < ApplicationRecord
     end
     return false
   end
+
 end

@@ -1,5 +1,5 @@
 class TweetsController < ApplicationController
-  before_action :authenticate_user, only: [:timeline, :create]
+  before_action :authenticate_user, only: [:timeline, :create, :like_toggle, :retweet_toggle]
 
 
   def create
@@ -13,8 +13,13 @@ class TweetsController < ApplicationController
 
   def show
     @tweet = Tweet.find_by(id: params[:id])
-    @current_user = current_user
-    render :show
+    if @tweet
+      @tweet.view
+      @current_user = current_user
+      render :show
+    else
+      render json: {error: 'tweet not found.'}
+    end
   end
 
   def subtweet
@@ -38,6 +43,7 @@ class TweetsController < ApplicationController
     end
   end
 
+
   def user_tweets
     user = User.find_by(username: params[:username])
 
@@ -45,9 +51,14 @@ class TweetsController < ApplicationController
 
     if user
       @tweets = user.content(offset, limit)
+      @tweets.each do |tweet|
+        if tweet.attributes['text']
+         tweet.view
+        end
+      end
       render :index
     else
-      render json: {error: 'User id not found.'}
+      render json: {error: 'Username not found.'}
     end
   end
 
@@ -56,6 +67,11 @@ class TweetsController < ApplicationController
 
     @current_user = current_user
     @tweets = @current_user.timeline(offset, limit)
+    @tweets.each do |tweet|
+      if tweet.attributes['text']
+       tweet.view
+      end
+    end
     render :index
   end
 
@@ -66,6 +82,11 @@ class TweetsController < ApplicationController
 
     if user
       @tweets = user.liked_tweets(offset, limit)
+      @tweets.each do |tweet|
+        if tweet.attributes['text']
+         tweet.view
+        end
+      end
       render :index
     else
       render json: {error: 'User id not found.'}
@@ -77,14 +98,35 @@ class TweetsController < ApplicationController
     @tweet = Tweet.find_by(id: params[:id])
     @current_user = current_user
 
-    if @tweet.liked_by_user(@current_user)
-      like = Like.find_by(tweet_id: @tweet.id, user_id: @current_user.id)
-      like.destroy
+    if @tweet
+      if @tweet.liked_by_user(@current_user)
+        like = Like.find_by(tweet_id: @tweet.id, user_id: @current_user.id)
+        like.destroy
+      else
+        like = Like.new(tweet_id: @tweet.id, user_id: @current_user.id)
+        like.save
+      end
+      render :show
     else
-      like = Like.new(tweet_id: @tweet.id, user_id: @current_user.id)
-      like.save
+      render json: {error: 'tweet not found.'}
     end
-    render :show
+  end
+
+  def retweet_toggle
+    @tweet = Tweet.find_by(id: params[:id])
+    @current_user = current_user
+
+    if @tweet
+      if @tweet.retweeted_by_user(@current_user)
+        rt = Retweet.find_by(tweet_id: @tweet.id, user_id: @current_user.id)
+        rt.destroy
+      else
+        rt = Retweet.new(tweet_id: @tweet.id, user_id: current_user.id)
+      end
+      render :show
+    else
+      render json: {error: 'tweet not found.'}
+    end
   end
   
 end

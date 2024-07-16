@@ -4,9 +4,13 @@ json.text @tweet.text
 json.image @tweet.image
 json.video @tweet.video
 
+json.timestamp @tweet.created_at
+
 json.likes @tweet.like_count
 json.retweets @tweet.retweet_count
 json.replies @tweet.reply_count
+json.views @tweet.views
+json.timestamp @tweet.timestamp
 
 json.display_name @tweet.user.display_name
 json.username @tweet.user.username
@@ -29,6 +33,8 @@ json.subtweets do
     json.likes sub.subtweet.like_count
     json.retweets sub.subtweet.retweet_count
     json.replies sub.subtweet.reply_count
+    json.views sub.subtweet.views
+    json.timestamp sub.subtweet.timestamp
 
     json.display_name sub.subtweet.user.display_name
     json.username sub.subtweet.user.username
@@ -53,6 +59,8 @@ if @tweet.is_quote
     json.likes qt.like_count
     json.retweets qt.retweet_count
     json.replies qt.reply_count
+    json.views qt.views
+    json.timestamp qt.timestamp
 
     json.display_name qt.user.display_name
     json.username qt.user.username
@@ -76,6 +84,8 @@ if @tweet.is_subtweet
       json.likes par.like_count
       json.retweets par.retweet_count
       json.replies par.reply_count
+      json.views par.views
+      json.timestamp par.timestamp
 
       json.display_name par.user.display_name
       json.username par.user.username
