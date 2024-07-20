@@ -1,5 +1,6 @@
 class Tweet < ApplicationRecord
   belongs_to :user
+  
   has_many :likes
   has_many :retweets
 
@@ -20,14 +21,6 @@ class Tweet < ApplicationRecord
     if self.text == nil && self.image == nil && self.video == nil
       errors.add(:base, "Tweet must contain content.")
     end
-  end
-
-  def like_count
-    return self.likes.length
-  end
-
-  def retweet_count
-    return self.retweets.length
   end
   
   def reply_count
@@ -70,17 +63,15 @@ class Tweet < ApplicationRecord
 
   
   def liked_by_user(user)
-    id = user.id
-    likes = Like.where(tweet_id: self.id).order(user_id: 'asc').map {|like| like.user_id}
+    likes = Like.where(tweet_id: self.id, user_id: user.id)
     
-    return self.binary_search(likes, id)
+    return likes.length > 0
   end
 
   def retweeted_by_user(user)
-    id = user.id
-    retweets = Retweet.where(tweet_id: self.id).order(user_id: 'asc').map {|rt| rt.user_id}
+    retweets = Retweet.where(tweet_id: self.id, user_id: user.id)
 
-    return self.binary_search(retweets, id)
+    return retweets.length > 0
   end
 
 

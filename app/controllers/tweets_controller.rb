@@ -4,7 +4,9 @@ class TweetsController < ApplicationController
 
   def create
     @tweet = Tweet.new(user_id: current_user.id, text: params[:text], image: params[:image], video: params[:video])
+    @tweet.save
     if @tweet.save
+      @tweet.update(timestamp: @tweet.created_at) 
       render :show
     else
       render json: {error: @tweet.errors}
@@ -28,8 +30,12 @@ class TweetsController < ApplicationController
     if tweet
       @tweet = Tweet.new(user_id: current_user.id, text: params[:text], image: params[:image], video: params[:video], is_subtweet: true)
       if @tweet.save
+        @tweet.update(timestamp: @tweet.created_at) 
+
         s = Subtweet.new(tweet_id: tweet.id, sub_id: @tweet.id)
         if s.save
+          @tweet.reply_count +=1
+          @tweet.save
           render :show
         else
           @tweet.destroy
@@ -45,6 +51,7 @@ class TweetsController < ApplicationController
 
 
   def user_tweets
+    @current_user = current_user
     user = User.find_by(username: params[:username])
 
     offset, limit = params[:offset] || 0, params[:limit] || 50
@@ -102,16 +109,20 @@ class TweetsController < ApplicationController
       if @tweet.liked_by_user(@current_user)
         like = Like.find_by(tweet_id: @tweet.id, user_id: @current_user.id)
         like.destroy
+        @tweet.like_count -=1
       else
         like = Like.new(tweet_id: @tweet.id, user_id: @current_user.id)
         like.save
+        @tweet.like_count +=1
       end
+      @tweet.save
       render :show
     else
       render json: {error: 'tweet not found.'}
     end
   end
 
+  
   def retweet_toggle
     @tweet = Tweet.find_by(id: params[:id])
     @current_user = current_user
@@ -120,9 +131,15 @@ class TweetsController < ApplicationController
       if @tweet.retweeted_by_user(@current_user)
         rt = Retweet.find_by(tweet_id: @tweet.id, user_id: @current_user.id)
         rt.destroy
+        @tweet.retweet_count -=1
       else
         rt = Retweet.new(tweet_id: @tweet.id, user_id: current_user.id)
+        if rt.save
+          rt.update(timestamp: rt.created_at)
+          @tweet.retweet_count +=1
+        end
       end
+      @tweet.save
       render :show
     else
       render json: {error: 'tweet not found.'}

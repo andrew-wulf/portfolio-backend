@@ -16,6 +16,10 @@ json.display_name @tweet.user.display_name
 json.username @tweet.user.username
 json.avi @tweet.user.avi
 
+json.bio @tweet.user.bio
+json.follower_count @tweet.user.follower_count
+json.following_count @tweet.user.following_count
+
 json.edited @tweet.edited
 json.active @tweet.active
 
@@ -39,6 +43,10 @@ json.subtweets do
     json.display_name sub.subtweet.user.display_name
     json.username sub.subtweet.user.username
     json.avi sub.subtweet.user.avi
+
+    json.bio sub.subtweet.user.bio
+    json.follower_count sub.subtweet.user.follower_count
+    json.following_count sub.subtweet.user.following_count
 
     json.edited sub.subtweet.edited
     json.active sub.subtweet.active
@@ -66,9 +74,15 @@ if @tweet.is_quote
     json.username qt.user.username
     json.avi qt.user.avi
 
+    json.bio qt.user.bio
+    json.follower_count qt.user.follower_count
+    json.following_count qt.user.following_count
+
     json.edited qt.edited
     json.active qt.active
   end
+else
+  json.quoted_tweet nil
 end
 
 
@@ -91,13 +105,23 @@ if @tweet.is_subtweet
       json.username par.user.username
       json.avi par.user.avi
 
+      json.bio par.user.bio
+      json.follower_count par.user.follower_count
+      json.following_count par.user.following_count
+
       json.edited par.edited
       json.active par.active
     end
   end
+else
+  json.parents nil
 end
 
 if @current_user
   json.liked_by_user @tweet.liked_by_user(@current_user)
+  json.retweeted_by_user @tweet.retweeted_by_user(@current_user)
+else
+  json.liked_by_user nil
+  json.retweeted_by_user nil
 end
 

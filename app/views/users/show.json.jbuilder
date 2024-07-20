@@ -13,8 +13,8 @@ json.verified @user.verified
 json.admin @user.admin
 
 
-json.followers @user.followers
-json.following @user.following
+json.followers @user.follower_count
+json.following @user.following_count
 
 likes = @user.likes
 json.likes likes.count

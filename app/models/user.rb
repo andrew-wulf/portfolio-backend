@@ -42,25 +42,65 @@ class User < ApplicationRecord
 
 
 
-  def content(offset=0, limit=50)
+  def content(offset=0, limit=0)
 
-    retweets = Retweet.where(user_id: self.id).offset(offset).limit(limit).map {|rt| [rt.created_at, rt]}
-    tweets = Tweet.where(user_id: self.id).where(is_subtweet: false).offset(offset).limit(limit).map {|tweet| [tweet.created_at, tweet]}
+   sql = "
+   SELECT id, user_id, timestamp, is_retweet FROM tweets
+   WHERE (is_subtweet = FALSE) AND (user_id = #{self.id})
+   UNION ALL
+   SELECT id, user_id, timestamp, is_retweet FROM retweets
+   WHERE user_id = #{self.id}
+   ORDER BY timestamp DESC
+   OFFSET #{offset}
+   LIMIT #{limit};
+   "
+   records_array = ActiveRecord::Base.connection.execute(sql).values
 
-    mixed_arr = tweets + retweets
-    output= self.sort_mixed_output(mixed_arr)
-    return output
+   output = []
+
+   records_array.each do |row|
+     if row[-1]
+       item = Retweet.find_by(id: row[0])
+     else
+       item = Tweet.find_by(id: row[0])
+     end
+     output.push(item)
+   end
+
+   return output
   end
 
-  def timeline(offset=0, limit=50)
+
+  def timeline(offset=0, limit=200)
     
-    ids = self.following.map {|user| user.id}
+    follow_ids = self.following.map {|user| user.id}
 
-    retweets = Retweet.where(user_id: ids).offset(offset).limit(limit).map {|rt| [rt.timestamp, rt]}
-    tweets = Tweet.where(user_id: ids).where(is_subtweet: false).offset(offset).limit(limit).map {|tweet| [tweet.timestamp, tweet]}
+    follow_string = "(#{follow_ids.join(', ')})"
 
-    mixed_arr = tweets + retweets
-    output= self.sort_mixed_output(mixed_arr)
+    self_included = follow_string.sub(")", ", #{self.id})")
+
+    sql = "
+    SELECT id, user_id, timestamp, is_retweet FROM tweets
+    WHERE (is_subtweet = FALSE) AND (user_id IN #{self_included})
+    UNION ALL
+    SELECT id, user_id, timestamp, is_retweet FROM retweets
+    WHERE user_id IN #{follow_string}
+    ORDER BY timestamp DESC
+    OFFSET #{offset}
+    LIMIT #{limit};
+    "
+    records_array = ActiveRecord::Base.connection.execute(sql).values
+
+    output = []
+
+    records_array.each do |row|
+      if row[-1]
+        item = Retweet.find_by(id: row[0])
+      else
+        item = Tweet.find_by(id: row[0])
+      end
+      output.push(item)
+    end
 
     return output
   end

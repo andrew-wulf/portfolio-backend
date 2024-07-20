@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_16_163008) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_19_183410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,10 +48,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_163008) do
 
   create_table "retweets", force: :cascade do |t|
     t.integer "tweet_id"
-    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "timestamp"
+    t.integer "retweet_id"
+    t.integer "user_id"
+    t.boolean "is_retweet", default: true
   end
 
   create_table "subtweets", force: :cascade do |t|
@@ -74,6 +76,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_163008) do
     t.boolean "is_quote", default: false
     t.integer "views", default: 0
     t.datetime "timestamp"
+    t.integer "like_count", default: 0
+    t.integer "retweet_count", default: 0
+    t.integer "reply_count", default: 0
+    t.boolean "is_retweet", default: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -88,6 +94,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_163008) do
     t.boolean "admin", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "follower_count", default: 0
+    t.integer "following_count", default: 0
   end
 
   add_foreign_key "follows", "users", column: "followed_id"
