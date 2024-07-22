@@ -25,8 +25,9 @@ class UsersController < ApplicationController
     @user.update(bio: params[:bio] || @user.bio, 
     avi: params[:avi] || @user.avi, 
     banner: params[:banner] || @user.banner, 
-    display_name: params[:display_name] || @user.display_name)
-    
+    display_name: params[:display_name] || @user.display_name,
+    verified: params[:verified] || @user.verified)
+
     render :show
   end
 

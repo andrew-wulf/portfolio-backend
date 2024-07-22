@@ -22,6 +22,7 @@ json.array! @tweets do |tweet|
   json.display_name tweet.user.display_name
   json.username tweet.user.username
   json.avi tweet.user.avi
+  json.verified tweet.user.verified
 
   json.bio tweet.user.bio
   json.follower_count tweet.user.follower_count
@@ -53,6 +54,7 @@ json.array! @tweets do |tweet|
       json.display_name qt.user.display_name
       json.username qt.user.username
       json.avi qt.user.avi
+      json.verified qt.user.verified
 
       json.bio qt.user.bio
       json.follower_count qt.user.follower_count

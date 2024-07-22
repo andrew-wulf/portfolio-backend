@@ -23,6 +23,9 @@ Rails.application.routes.draw do
 
   get "/tweets/timeline" => "tweets#timeline"
   get "/tweets/suggested" => "tweets#suggested"
+
+  get "/tweets/users/:username/replies" => "tweets#user_replies"
+  get "/tweets/users/:username/likes" => "tweets#user_likes"
   get "/tweets/users/:username" => "tweets#user_tweets"
 
   get "/tweets/:id" => "tweets#show"

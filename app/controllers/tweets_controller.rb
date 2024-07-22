@@ -50,24 +50,6 @@ class TweetsController < ApplicationController
   end
 
 
-  def user_tweets
-    @current_user = current_user
-    user = User.find_by(username: params[:username])
-
-    offset, limit = params[:offset] || 0, params[:limit] || 50
-
-    if user
-      @tweets = user.content(offset, limit)
-      @tweets.each do |tweet|
-        if tweet.attributes['text']
-         tweet.view
-        end
-      end
-      render :index
-    else
-      render json: {error: 'Username not found.'}
-    end
-  end
 
   def timeline
     offset, limit = params[:offset] || 0, params[:limit] || 20
@@ -95,13 +77,51 @@ class TweetsController < ApplicationController
     render :index
   end
 
-  def liked_tweets
+
+  def user_tweets
+    @current_user = current_user
     user = User.find_by(username: params[:username])
 
-    offset, limit = params[:offset] || 0, params[:limit] || 50
+    offset, limit = params[:offset] || 0, params[:limit] || 20
+
+    if user
+      @tweets = user.content(offset, limit)
+      @tweets.each do |tweet|
+        if tweet.attributes['text']
+         tweet.view
+        end
+      end
+      render :index
+    else
+      render json: {error: 'Username not found.'}
+    end
+  end
+
+  def user_likes
+    user = User.find_by(username: params[:username])
+
+    offset, limit = params[:offset] || 0, params[:limit] || 20
 
     if user
       @tweets = user.liked_tweets(offset, limit)
+      @tweets.each do |tweet|
+        if tweet.attributes['text']
+         tweet.view
+        end
+      end
+      render :index
+    else
+      render json: {error: 'User id not found.'}
+    end
+  end
+
+  def user_replies
+    user = User.find_by(username: params[:username])
+
+    offset, limit = params[:offset] || 0, params[:limit] || 20
+
+    if user
+      @tweets = user.reply_tweets(offset, limit)
       @tweets.each do |tweet|
         if tweet.attributes['text']
          tweet.view

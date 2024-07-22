@@ -28,9 +28,6 @@ class User < ApplicationRecord
     return self.retweets.map {|rt| rt.tweet}
   end
 
-  def liked_tweets
-    return self.likes.reverse.map {|like| like.tweet}
-  end
 
   def quotes
     output = self.tweets.reverse.filter {|t| t.is_quote}
@@ -50,33 +47,6 @@ class User < ApplicationRecord
     return follows.length > 0
   end
 
-  def content(offset=0, limit=0)
-
-   sql = "
-   SELECT id, user_id, timestamp, is_retweet FROM tweets
-   WHERE (is_subtweet = FALSE) AND (user_id = #{self.id})
-   UNION ALL
-   SELECT id, user_id, timestamp, is_retweet FROM retweets
-   WHERE user_id = #{self.id}
-   ORDER BY timestamp DESC
-   OFFSET #{offset}
-   LIMIT #{limit};
-   "
-   records_array = ActiveRecord::Base.connection.execute(sql).values
-
-   output = []
-
-   records_array.each do |row|
-     if row[-1]
-       item = Retweet.find_by(id: row[0])
-     else
-       item = Tweet.find_by(id: row[0])
-     end
-     output.push(item)
-   end
-
-   return output
-  end
 
 
   def timeline(offset=0, limit=200)
@@ -131,5 +101,48 @@ class User < ApplicationRecord
     follow_ids.push(self.id)
     return Tweet.where.not(user_id: follow_ids).order(views: :desc).limit(limit).offset(offset)
   end
+
+
+
+
+
+  def content(offset=0, limit=0)
+
+    sql = "
+    SELECT id, user_id, timestamp, is_retweet FROM tweets
+    WHERE (is_subtweet = FALSE) AND (user_id = #{self.id})
+    UNION ALL
+    SELECT id, user_id, timestamp, is_retweet FROM retweets
+    WHERE user_id = #{self.id}
+    ORDER BY timestamp DESC
+    OFFSET #{offset}
+    LIMIT #{limit};
+    "
+    records_array = ActiveRecord::Base.connection.execute(sql).values
+ 
+    output = []
+ 
+    records_array.each do |row|
+      if row[-1]
+        item = Retweet.find_by(id: row[0])
+      else
+        item = Tweet.find_by(id: row[0])
+      end
+      output.push(item)
+    end
+ 
+    return output
+   end
+ 
+
+   def liked_tweets(offset=0, limit=20)
+     likes = Like.where(user_id: self.id).order(created_at: :desc).limit(limit).offset(offset)
+     return likes.map {|like| like.tweet}
+   end
+
+   def reply_tweets(offset=0, limit=20)
+    return Tweet.where(user_id: self.id, is_subtweet: true).order(timestamp: :desc).limit(limit).offset(offset)
+   end
+
 
 end

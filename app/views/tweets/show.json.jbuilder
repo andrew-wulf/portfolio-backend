@@ -15,6 +15,7 @@ json.timestamp @tweet.timestamp
 json.display_name @tweet.user.display_name
 json.username @tweet.user.username
 json.avi @tweet.user.avi
+json.verified @tweet.user.verified
 
 json.bio @tweet.user.bio
 json.follower_count @tweet.user.follower_count
@@ -43,6 +44,7 @@ json.subtweets do
     json.display_name sub.subtweet.user.display_name
     json.username sub.subtweet.user.username
     json.avi sub.subtweet.user.avi
+    json.verified sub.subtweet.user.verified
 
     json.bio sub.subtweet.user.bio
     json.follower_count sub.subtweet.user.follower_count
@@ -73,6 +75,7 @@ if @tweet.is_quote
     json.display_name qt.user.display_name
     json.username qt.user.username
     json.avi qt.user.avi
+    json.verified qt.user.verified
 
     json.bio qt.user.bio
     json.follower_count qt.user.follower_count
@@ -104,6 +107,7 @@ if @tweet.is_subtweet
       json.display_name par.user.display_name
       json.username par.user.username
       json.avi par.user.avi
+      json.verified par.user.verified
 
       json.bio par.user.bio
       json.follower_count par.user.follower_count
