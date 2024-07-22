@@ -12,13 +12,17 @@ Rails.application.routes.draw do
   get "/login" => "sessions#login"
 
   get "/user" => "users#current_user_info"
+  post "/user/update" => "users#update"
+  get "/recommendations" => "users#who_to_follow"
 
-  get "users/exists" => "users#exists"
+  get "/users/exists" => "users#exists"
   get "/users/:username" => "users#show"
+  post "/users/:username/follow" => "users#follow_toggle"
 
   post "/users" => "users#create"
 
   get "/tweets/timeline" => "tweets#timeline"
+  get "/tweets/suggested" => "tweets#suggested"
   get "/tweets/users/:username" => "tweets#user_tweets"
 
   get "/tweets/:id" => "tweets#show"
@@ -27,6 +31,7 @@ Rails.application.routes.draw do
 
   post "/tweets/new" => "tweets#create"
   post "/tweets/subtweet" => "tweets#subtweet"
+
 
   post "/movies/search" => "movie_battle#search"
   post "/movies/data/:id" => "movie_battle#movie_data"

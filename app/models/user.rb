@@ -40,7 +40,15 @@ class User < ApplicationRecord
     return self.tweets.reverse.filter {|t| t.is_subtweet}
   end
 
+  def followed_by_user(user)
+    follows = Follow.where(follower_id: user.id, followed_id: self.id)
+    return follows.length > 0
+  end
 
+  def follows_user(user)
+    follows = Follow.where(follower_id: self.id, followed_id: user.id)
+    return follows.length > 0
+  end
 
   def content(offset=0, limit=0)
 
@@ -72,8 +80,12 @@ class User < ApplicationRecord
 
 
   def timeline(offset=0, limit=200)
-    
+
     follow_ids = self.following.map {|user| user.id}
+   
+    if follow_ids.length < 1
+      return Tweet.where(user_id: self.id).limit(limit).offset(offset).order(timestamp: :desc)
+    end
 
     follow_string = "(#{follow_ids.join(', ')})"
 
@@ -107,29 +119,17 @@ class User < ApplicationRecord
 
 
 
-  def sort_mixed_output(arr)
-
-    i = 0
-
-    while i < arr.length - 1
-    
-      j = arr.length - 1
-
-      while j > i
-        #compare timestamps for sorting. Sort highest to lowest
-
-        if arr[j][0] > arr[j - 1][0]
-          arr[j], arr[j - 1] = arr[j - 1], arr[j]
-        end
-        
-        j -=1
-      end
-
-      i+=1
-    end
-
-    return arr.map {|arr| arr[1]}
+  def who_to_follow
+    follow_ids = self.following.map {|user| user.id}
+    follow_ids.push(self.id)
+    return User.where.not(id: follow_ids).order(follower_count: :desc).limit(4)
   end
 
+
+  def suggested_tweets(offset=0, limit=20)
+    follow_ids = self.following.map {|user| user.id}
+    follow_ids.push(self.id)
+    return Tweet.where.not(user_id: follow_ids).order(views: :desc).limit(limit).offset(offset)
+  end
 
 end

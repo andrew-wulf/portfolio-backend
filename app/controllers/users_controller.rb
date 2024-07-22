@@ -19,6 +19,17 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    @user = current_user
+
+    @user.update(bio: params[:bio] || @user.bio, 
+    avi: params[:avi] || @user.avi, 
+    banner: params[:banner] || @user.banner, 
+    display_name: params[:display_name] || @user.display_name)
+    
+    render :show
+  end
+
   def current_user_info
     @user = current_user
     render :show
@@ -27,6 +38,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find_by(username: params[:username])
+    @current = current_user
     render :show
   end
 
@@ -50,4 +62,32 @@ class UsersController < ApplicationController
     render json: {user_exists: exists}
   end
   
+
+  def follow_toggle
+    @user = User.find_by(username: params[:username])
+    @current = current_user
+
+    if @user and @current
+      follow = Follow.find_by(follower_id: @current.id, followed_id: @user.id)
+      if follow
+        follow.destroy
+      else
+        follow = Follow.new(follower_id: @current.id, followed_id: @user.id)
+        follow.save
+      end
+      render :show
+    else 
+      render json: {error: 'user not found'}
+    end
+
+  end
+
+
+  def who_to_follow
+    @current = current_user
+    @users = @current.who_to_follow
+
+    render :index
+  end
+
 end

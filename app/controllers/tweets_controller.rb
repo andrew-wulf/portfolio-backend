@@ -70,10 +70,23 @@ class TweetsController < ApplicationController
   end
 
   def timeline
-    offset, limit = params[:offset] || 0, params[:limit] || 50
+    offset, limit = params[:offset] || 0, params[:limit] || 20
 
     @current_user = current_user
     @tweets = @current_user.timeline(offset, limit)
+    @tweets.each do |tweet|
+      if tweet.attributes['text']
+       tweet.view
+      end
+    end
+    render :index
+  end
+
+  def suggested
+    offset, limit = params[:offset] || 0, params[:limit] || 20
+
+    @current_user = current_user
+    @tweets = @current_user.suggested_tweets(offset, limit)
     @tweets.each do |tweet|
       if tweet.attributes['text']
        tweet.view
@@ -122,7 +135,7 @@ class TweetsController < ApplicationController
     end
   end
 
-  
+
   def retweet_toggle
     @tweet = Tweet.find_by(id: params[:id])
     @current_user = current_user
