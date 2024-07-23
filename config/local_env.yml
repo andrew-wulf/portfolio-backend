@@ -2,3 +2,11 @@
 THEMOVIEDB_API_KEY: "05f97be5a9cb29546d1a3222f787becc"
 THEMOVIEDB_ACCESS_TOKEN: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNWY5N2JlNWE5Y2IyOTU0NmQxYTMyMjJmNzg3YmVjYyIsInN1YiI6IjY2NDI3YjdkM2Q5MGIyZGY5MzdjOWU1YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.9TO_BaJO1erFgoxY1-iuTXyWBZiUYfnJRiF7j6ne2CM"
 THEMOVIEDB_BASE_URL: 'https://api.themoviedb.org/3'
+
+
+DEV_PASS: 'Fewhuezoo00'
+
+PROD_DB_URL: 'postgresql://andrew_wulf_portfolio_api_user:hhnEwbCoxXHEwMag9zXfj7lupoYt1Z43@dpg-cqfvem5ds78s73c6iikg-a.ohio-postgres.render.com/andrew_wulf_portfolio_api'
+PROD_DB_NAME: 'andrew_wulf_portfolio_api'
+PROD_USER: 'andrew_wulf_portfolio_api_user'
+PROD_PASS: 'hhnEwbCoxXHEwMag9zXfj7lupoYt1Z43'

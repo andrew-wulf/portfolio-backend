@@ -83,6 +83,7 @@ test:
 #
 production:
   <<: *default
+  url: <%= ENV['PROD_DB']
   database: portfolio_backend_production
   username: postgres
   password: Fewhuezoo00
