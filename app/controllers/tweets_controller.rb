@@ -98,6 +98,7 @@ class TweetsController < ApplicationController
   end
 
   def user_likes
+    @current_user = current_user
     user = User.find_by(username: params[:username])
 
     offset, limit = params[:offset] || 0, params[:limit] || 20
@@ -116,6 +117,7 @@ class TweetsController < ApplicationController
   end
 
   def user_replies
+    @current_user = current_user
     user = User.find_by(username: params[:username])
 
     offset, limit = params[:offset] || 0, params[:limit] || 20
