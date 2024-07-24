@@ -6,7 +6,7 @@ THEMOVIEDB_BASE_URL: 'https://api.themoviedb.org/3'
 
 DEV_PASS: 'Fewhuezoo00'
 
-PROD_DB_URL: 'postgresql://andrew_wulf_portfolio_api_user:hhnEwbCoxXHEwMag9zXfj7lupoYt1Z43@dpg-cqfvem5ds78s73c6iikg-a.ohio-postgres.render.com/andrew_wulf_portfolio_api'
-PROD_DB_NAME: 'andrew_wulf_portfolio_api'
-PROD_USER: 'andrew_wulf_portfolio_api_user'
-PROD_PASS: 'hhnEwbCoxXHEwMag9zXfj7lupoYt1Z43'
+PROD_DB_URL: 'postgresql://postgres.rouzecaoofokcalkogvu:Saxcarbot09!@aws-0-us-east-1.pooler.supabase.com:6543/postgres'
+PROD_DB_NAME: 'postgres'
+PROD_USER: 'postgres.rouzecaoofokcalkogvu'
+PROD_PASS: 'Saxcarbot09!'

@@ -37,6 +37,7 @@ banner_index = 0
 men_index = 0
 women_index = 0
 
+puts "Creating users..."
 
 # ---------- make admin account & a tweet
 
@@ -171,7 +172,7 @@ curr = 'men'
 end
 
 
-
+puts "Adding follows..."
 
 # Generate followers
 all_users = User.all
@@ -202,7 +203,7 @@ all_users.each do |user|
 end
 
 
-
+puts "writing tweets..."
 # First, generate primary user tweets. These don't have any responses at the moment.
 time = DateTime.now.advance(months: -3, days: -1)
 limit = DateTime.now.advance(months: -9)
@@ -238,7 +239,7 @@ while j < 5
 end
 
 
-
+puts "halfway done, adding more tweets and retweets..."
 # Generate a bunch of random tweets with responses. Random users tweet them out, interspersed with randomly placed quote tweets and retweets (which are guaranteed to be a smaller percentage of content).
 
 # When a tweet is made, random followers of the user will tweet the subtweets in a random order.
@@ -332,7 +333,7 @@ while i < rand_tweets.length
 end
 
 
-
+puts "generating likes..."
 # After everything else is done, everyone likes a ton of random tweets.
 
 User.all.each do |user|
@@ -349,6 +350,11 @@ User.all.each do |user|
   end
 end
 
+
+
+
+
+puts "done!"
 
 
 
