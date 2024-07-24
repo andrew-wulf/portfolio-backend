@@ -21,7 +21,7 @@ module PortfolioBackend
       env_file = File.join(Rails.root, 'config', 'local_env.yml')
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value
-      end
+      end if File.file?(env_file)
     end
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
