@@ -54,7 +54,7 @@ class User < ApplicationRecord
     follow_ids = self.following.map {|user| user.id}
    
     if follow_ids.length < 1
-      return Tweet.where(user_id: self.id).limit(limit).offset(offset).order(timestamp: :desc)
+      return Tweet.where(user_id: self.id, active: true).limit(limit).offset(offset).order(timestamp: :desc)
     end
 
     follow_string = "(#{follow_ids.join(', ')})"
@@ -63,7 +63,7 @@ class User < ApplicationRecord
 
     sql = "
     SELECT id, user_id, timestamp, is_retweet FROM tweets
-    WHERE (is_subtweet = FALSE) AND (user_id IN #{self_included})
+    WHERE (is_subtweet = FALSE) AND (active = TRUE) AND (user_id IN #{self_included})
     UNION ALL
     SELECT id, user_id, timestamp, is_retweet FROM retweets
     WHERE user_id IN #{follow_string}
@@ -110,7 +110,7 @@ class User < ApplicationRecord
 
     sql = "
     SELECT id, user_id, timestamp, is_retweet FROM tweets
-    WHERE (is_subtweet = FALSE) AND (user_id = #{self.id})
+    WHERE (is_subtweet = FALSE) AND (active = TRUE) AND (user_id = #{self.id})
     UNION ALL
     SELECT id, user_id, timestamp, is_retweet FROM retweets
     WHERE user_id = #{self.id}
@@ -136,12 +136,12 @@ class User < ApplicationRecord
  
 
    def liked_tweets(offset=0, limit=20)
-     likes = Like.where(user_id: self.id).order(created_at: :desc).limit(limit).offset(offset)
+     likes = Like.where(user_id: self.id, active: true).order(created_at: :desc).limit(limit).offset(offset)
      return likes.map {|like| like.tweet}
    end
 
    def reply_tweets(offset=0, limit=20)
-    return Tweet.where(user_id: self.id, is_subtweet: true).order(timestamp: :desc).limit(limit).offset(offset)
+    return Tweet.where(user_id: self.id, is_subtweet: true, active: true).order(timestamp: :desc).limit(limit).offset(offset)
    end
 
 

@@ -32,6 +32,9 @@ Rails.application.routes.draw do
   post "/tweets/:id/like" => "tweets#like_toggle"
   post "/tweets/:id/retweet" => "tweets#retweet_toggle"
 
+  post "/update/:id" => "tweets#update"
+  post "/delete/:id" => "tweets#delete"
+
   post "/tweets/new" => "tweets#create"
   post "/tweets/subtweet" => "tweets#subtweet"
 

@@ -24,6 +24,37 @@ class TweetsController < ApplicationController
     end
   end
 
+  def update
+    @tweet = Tweet.find_by(id: params[:id])
+    if current_user.id == @tweet.user.id
+      @tweet.text = params[:text]
+      @tweet.edited = true
+      if @tweet.save
+        render :show
+      else
+        render json: {error: @tweet.errors}
+      end
+    else
+      render json: {error: 'User unauthorized.'}
+    end
+  end
+
+  def delete
+    @tweet = Tweet.find_by(id: params[:id])
+
+    if current_user.id == @tweet.user.id
+      @tweet.active = false
+      if @tweet.save
+        render :show
+      else
+        render json: {error: @tweet.errors}
+      end
+    else
+      render json: {error: 'User unauthorized.'}
+    end
+  end
+
+
   def subtweet
     tweet = Tweet.find_by(id: params[:tweet_id])
 
