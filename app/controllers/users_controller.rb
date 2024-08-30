@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user, only: [:current_user_info]
 
   def create
+
     user = User.new(
       username: params[:username],
       email: params[:email],

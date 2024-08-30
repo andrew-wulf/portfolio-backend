@@ -136,7 +136,7 @@ class User < ApplicationRecord
  
 
    def liked_tweets(offset=0, limit=20)
-     likes = Like.where(user_id: self.id, active: true).order(created_at: :desc).limit(limit).offset(offset)
+     likes = Like.where(user_id: self.id).order(created_at: :desc).limit(limit).offset(offset)
      return likes.map {|like| like.tweet}
    end
 
