@@ -37,9 +37,8 @@ These are optional:
 
 To "Log In" as a user:
 
-` POST "/sessions.json
-
-params: {email, password} `
+`POST "/sessions.json`
+`params: {email, password}`
 
 If successful, you will recieve a jwt token.
 To make requests as the user, put the following in each request header:
