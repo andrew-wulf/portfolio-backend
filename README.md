@@ -30,10 +30,10 @@ Most content is viewed via two pages:
 - `get "tweets/timeline.json"`
 - `get "tweets/suggested.json"`
 
-3. When viewing another user's page, you can see their tweets/retweets, likes and replies through the following calls:
+2. When viewing another user's page, you can see their tweets/retweets, likes and replies through the following calls:
+- `get "/tweets/users/:username.json"`
 - `get "/tweets/users/:username/replies.json"`
 - `get "/tweets/users/:username/likes.json"`
-- `get "/tweets/users/:username.json"`
 
 
 ### The Seed File
