@@ -44,7 +44,7 @@ By default the seed file will populate the database with 200 users, each with fa
 Additionally, random users are given status updates with pre-generated ChatGPT responses to create instances of subtweets.
 
 Each user will follow 10-30 random users, with the admin and guest account guaranteed to follow 20 of the accounts that contain more content.
-Users will also randomly like and retweet tweets from the accounts they now follow (this can take a while, so increasing or decreasing the amount of likes per person in the seed file could have a large affect on startup time).
+Users will also randomly like and retweet tweets from the accounts they now follow (this can take a while, so increasing or decreasing the amount of likes per person in the seed file could have a large effect on startup time).
 Even the occasional quote tweet will be thrown in!
 
 Finally, the timestamps for all pre-made tweets are fabricated and randomized, ranging from the current date to 9 months prior.
