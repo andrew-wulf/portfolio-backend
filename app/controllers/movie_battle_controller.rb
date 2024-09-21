@@ -1,7 +1,6 @@
 class MovieBattleController < ApplicationController
 
-
-
+  
   def search()
     
     term = params[:term]

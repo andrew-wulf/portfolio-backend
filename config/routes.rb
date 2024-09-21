@@ -38,6 +38,12 @@ Rails.application.routes.draw do
   post "/tweets/new" => "tweets#create"
   post "/tweets/subtweet" => "tweets#subtweet"
 
+  post "/lobby" => "lobbies#create"
+  get "/lobby/:code" => "lobbies#view"
+  get "/lobbies" => "lobbies#index"
+
+  post "/lobby/:code/add/:player_name" => "lobbies#add_player"
+  post "/lobby/:code/remove/:player_name" => "lobbies#remove_player"
 
   post "/movies/search" => "movie_battle#search"
   post "/movies/data/:id" => "movie_battle#movie_data"
