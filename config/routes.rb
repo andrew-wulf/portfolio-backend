@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   post "/lobby/:code/remove/:player_name" => "lobbies#remove_player"
 
   post "/movies/search" => "movie_battle#search"
-  post "/movies/data/:id" => "movie_battle#movie_data"
+  post "/movies/data" => "movie_battle#movie_data"
+  post "/movies/compare" => "movie_battle#compare_movies"
 
 end

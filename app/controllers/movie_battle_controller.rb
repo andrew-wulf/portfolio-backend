@@ -55,9 +55,8 @@ class MovieBattleController < ApplicationController
     auto = params[:auto] || false
 
     @base_url = 'https://api.themoviedb.org/3'
-    key = Key.first
-    @api_key = key.key1
-    @access_token = key.key2
+    @api_key = ENV['THEMOVIEDB_API_KEY']
+    @access_token = ENV['THEMOVIEDB_ACCESS_TOKEN']
 
     #pp info
 
@@ -99,6 +98,88 @@ class MovieBattleController < ApplicationController
     end
     render json: output
   end
+
+
+
+  def in_blacklist?(person, blacklist)
+    blacklist.each do |n| 
+      if n == person
+        #pp [n, person]
+        return true
+      end
+    end
+    return false
+  end
+
+
+  
+  def compare_movies()
+    movie1_data = params[:movie1_data]
+    movie2_data = params[:movie2_data]
+    blacklist = params[:blacklist] || nil
+    hard_mode = params[:hard_mode] || false
+
+    if not blacklist
+      blacklist = []
+    end
+    #pp blacklist
+
+    first_match = nil
+
+    i = 1
+    while i < movie1_data.keys.length
+      key = movie1_data.keys[i]
+
+      for person in movie1_data[key]
+        if key == :cast
+          person, role = person[0], person[1]
+        end
+
+        for title in [:director, :screenplay, :cinematographer, :composer, :editor]
+          for crew in movie2_data[title]
+            if crew == person
+              if hard_mode
+                if in_blacklist?(crew, blacklist)
+                  render json: {result: ['fail', crew, 'fail', title.to_s]}
+                  return
+                elsif not first_match
+                  first_match = [crew, key, title.to_s]
+                end
+              else
+                render json: {result: ['success', crew, key, title.to_s]}
+                return
+              end
+            end
+          end
+        end
+
+        for actor in movie2_data[:cast]
+          if actor[0] == person 
+            if hard_mode
+              if in_blacklist?(actor[0], blacklist)
+                render json: {result: ['fail', actor[0], 'blacklisted', actor[1]]}
+                return
+              elsif not first_match
+                first_match = [actor[0], role, actor[1]]
+              end
+            else
+              render json: {result: ['success', actor[0], role, actor[1]]}
+              return
+            end            
+          end
+        end
+      end
+    
+      i +=1
+    end
+
+    if first_match
+      render json: {result: ['success', ...first_match]}
+    else
+      render json: {result: ['fail', nil]}
+    end
+  end
+
 
 
 end
