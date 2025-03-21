@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_20_234157) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_21_211448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_20_234157) do
     t.datetime "updated_at", null: false
     t.integer "follower_count", default: 0
     t.integer "following_count", default: 0
+  end
+
+  create_table "visitors", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "pending", default: false
+  end
+
+  create_table "visits", force: :cascade do |t|
+    t.integer "visitor_id"
+    t.string "site"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "follows", "users", column: "followed_id"

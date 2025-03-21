@@ -49,4 +49,8 @@ Rails.application.routes.draw do
   post "/movies/data" => "movie_battle#movie_data"
   post "/movies/compare" => "movie_battle#compare_movies"
 
+
+  post "/visit" => "visits#create"
+  get "/visits" => "visits#index"
+
 end
