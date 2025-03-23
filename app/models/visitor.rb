@@ -30,4 +30,36 @@ class Visitor < ApplicationRecord
 
         return data
     end
+
+
+    def get_all_recent_unique_visitors
+        visits = Visit.where("created_at >= ?", 30.days.ago)
+
+
+        links = {
+            "http://localhost:5173/" => "Portfolio Site",
+            "resume_link" => "Resume Link",
+            "https://chess-hfx7.onrender.com" => 'Chess App', 
+            "https://movie-battle.onrender.com" => "Movie Battle App",  
+            "https://twitter-clone-frontend-q1pw.onrender.com" => "Twitter Clone App",
+            'https://github.com/andrew-wulf/twitter-clone-frontend' => "Twitter Clone Github",
+            'https://github.com/andrew-wulf/movie_battle' => "Movie Battle Github",
+            'https://github.com/andrew-wulf/chess' => "Chess Github"
+        }
+
+        data = {}
+        links.values.each {|v| data[v] = {visits: [], unique_visitors: []}}
+
+        visits.each do |visit|
+            site = visit.site
+            if links.keys.include?(site)
+                data[links[site]][:visits].push([visit.visitor.id, visit.created_at.in_time_zone("America/Chicago").strftime('%m/%d %I:%M%p')])
+                if (!data[links[site]][:unique_visitors].include?(visit.visitor.id))
+                    data[links[site]][:unique_visitors].push(visit.visitor.id)
+                end
+            end
+        end
+
+        return data
+    end
 end

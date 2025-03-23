@@ -57,37 +57,9 @@ class VisitsController < ApplicationController
 
 
         if new_visitor
-            puts "new portfolio visitor! sending email alert."
-            visits = Visit.where("created_at >= ?", 30.days.ago)
-        
-            data = {}
+            puts "new portfolio visitor! Sending email alert after delay."
 
-            visits.each do |v|
-                visitor_id = v.visitor_id
-                if data.keys.include?(visitor_id)
-                    data[visitor_id] +=1
-                else
-                    data[visitor_id] = 1
-                end
-            end
-
-            tallies = []
-
-            data.keys.each do |key|
-                tallies.push(data[key])
-            end
-
-            if tallies.length > 0
-                tallies.delete_at(tallies.index(tallies.max))
-                visit_count = tallies.sum
-            else
-                visit_count = visits.length
-            end
-
-            
-            unique_visitors = data.keys.length
-
-            VisitMailer.new_visitor_email(unique_visitors, visit_count).deliver_now
+            AsyncVisitorEmailJob.set(wait: 30.minutes).perform_later(@visitor)
         end
 
 
@@ -96,17 +68,15 @@ class VisitsController < ApplicationController
 
         if links.include?(site)
             site_visits = Visit.where(site: site, visitor_id: @visitor.id)
-            if site_visits.length < 2
-                @visitor.update(pending: true)
-                sleep(30)
-                @visitor.update(pending: false)
-
-                data = @visitor.get_data
-
-                VisitMailer.new_link_email(@visitor.id, site, data).deliver_now
+            puts @visitor.pending
+            if site_visits.length < 2 && @visitor.pending == false
+                @visitor.pending = true
+                @visitor.save
+                
+                puts "Visitor Viewed a link for the first time! Sending email alert in 30 minutes."
+                AsyncLinkEmailJob.set(wait: 60.minutes).perform_later(@visitor, site)
             end
         end
-
 
     end
 

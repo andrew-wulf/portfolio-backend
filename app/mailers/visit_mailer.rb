@@ -1,8 +1,8 @@
 class VisitMailer < ApplicationMailer
 
-    def new_visitor_email(unique_visitors=0, visit_count=0)
-        @visit_count = visit_count
-        @unique_visitors = unique_visitors
+    def new_visitor_email(visitor_id, data)
+        @visitor_id = visitor_id
+        @data = data
 
         mail(from: "Alert <alerts@andrew-wulf-portfolio.com>", to: ENV['ALERTS_RECIPIENT'], subject: "New Visitor!")
     end
@@ -28,8 +28,8 @@ class VisitMailer < ApplicationMailer
         end
 
         if github_links.keys.include?(site)
-            @msg = "A visitor viewed your #{apps[site]} Github Page for the first time!"
-            subj = "Visitor viewed your Github: #{apps[site]}"
+            @msg = "A visitor viewed your #{github_links[site]} Github Page for the first time!"
+            subj = "Visitor viewed your Github: #{github_links[site]}"
         end
 
         mail(from: "Alert <alerts@andrew-wulf-portfolio.com>", to: ENV['ALERTS_RECIPIENT'], subject: subj)

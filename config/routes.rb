@@ -53,4 +53,5 @@ Rails.application.routes.draw do
   post "/visit" => "visits#create"
   get "/visits" => "visits#index"
 
+
 end
